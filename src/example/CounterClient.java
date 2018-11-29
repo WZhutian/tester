@@ -1,34 +1,23 @@
 package example;
 
-import org.bcos.web3j.abi.datatypes.Address;
-import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.abi.datatypes.Utf8String;
 import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.crypto.ECKeyPair;
 import org.bcos.web3j.crypto.Keys;
 import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
-import org.bcos.web3j.protocol.core.methods.response.EthGetWork;
 import org.bcos.web3j.protocol.core.methods.response.Log;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.bcosliteclient.Counter.ChangenameEventResponse;
-import org.bcosliteclient.Counter.CountedEventResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.bcos.channel.client.Service;
-import org.bcos.channel.test.cns.CNSRpc;
 import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.channel.ChannelEthereumService;
 
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -43,7 +32,7 @@ public class CounterClient {
 	public static Credentials credentials;
 
 	/* deploy the contract,get address from blockchain */
-	public static String deployCounter() throws InterruptedException, ExecutionException {
+	public static String deploy() throws InterruptedException, ExecutionException {
 
 		Future<Counter> futureDeploy = Counter.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue);
 		Counter counter = futureDeploy.get();
@@ -120,20 +109,10 @@ public class CounterClient {
 		int startBlockNumber = ethBlockNumber.getBlockNumber().intValue();
 		System.out.println("-->Got ethBlockNumber: " + startBlockNumber);
 
-		// deploy contract
-		if (args.length >= 1 && args[0].compareTo("deploy") == 0) {
-			deployCounter();
-		}
-		// callback contract
-		if (args.length >= 2 && args[0].compareTo("call_contract") == 0) {
-			testCounter(args[1]);
-		}
-
 		/* print block number after some transactions */
 		ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
 		int finishBlockNumber = ethBlockNumber.getBlockNumber().intValue();
 		System.out.println("<--start blockNumber = " + startBlockNumber + ",finish blocknmber=" + finishBlockNumber);
 		System.exit(0);
-
 	}
 }
