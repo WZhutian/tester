@@ -1,65 +1,72 @@
 package main;
 
+import org.bcos.web3j.abi.datatypes.generated.Bytes32;
+import org.bcos.web3j.abi.datatypes.generated.Uint8;
 import org.bcos.web3j.crypto.*;
 import org.bcos.web3j.protocol.Web3j;
+import org.bcos.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.SignatureException;
+import java.util.Arrays;
 
 public class tryTest {
 
     public static void main(String[] args) throws Exception {
-        ECKeyPair keyPair =  ECKeyPair.create(new BigInteger("852984b557aa21e3e824abc03cdf54256680ea438daf967e9d670da103faef24",16));
 
-        System.out.println(keyPair.getPublicKey().toString(16));
-//        signParams();
-//        generateKey();
+        generateKey();
+
+        String privateKey = "f7e8023349ee775ad5dd97a2a6844aad6f8d55bf0a60ac46a0afc77234c21a2b";
+        String publicKey = "d0cf0e3cb15a476fb65bc9898617fd38462101df5c9c3fc48547309ad63eb3202e7c254a511933aed31d7b1ddf755316d019d4cdd22bf40150a92bf209103369";
+        String address = "0xf8514b2da9da74903f409bfd6f9a7fc2aa056c93";
+
+        ECKeyPair keyPair = new ECKeyPair(new BigInteger(privateKey, 16), new BigInteger(publicKey, 16));
+        signParams(keyPair);
     }
-    //Public:852984b557aa21e3e824abc03cdf54256680ea438daf967e9d670da103faef24
-    //Private:852984b557aa21e3e824abc03cdf54256680ea438daf967e9d670da103faef24
-    //Address:f965fb27ece4cdbb9ce8a72e3cab43f4934e10ef
-//    Public:88389849803203412300082796402640469164451737580238328982268733578557535963820
-//    Private:88389849803203412300082796402640469164451737580238328982268733578557535963820
-//    Address:b66469acef61199b3bbe24dccee49358c57c583e
-    //Address:40
 
-    public static void generateKey() throws Exception {
+    public static ECKeyPair generateKey() throws Exception {
         //简单生成公私钥对
         ECKeyPair ecKeyPair = Keys.createEcKeyPair();
 
-        String sPublicKey = ecKeyPair.getPrivateKey().toString();
-        String sPublicKeyHex = ecKeyPair.getPrivateKey().toString(16);
-        String sPrivateKey = ecKeyPair.getPrivateKey().toString();
-        String sPrivateKeyHex = ecKeyPair.getPrivateKey().toString(16);
-        String sAddress = Keys.getAddress(sPublicKey);
-
-        System.out.println("Public:" + sPublicKey);
-        System.out.println("Private:" + sPrivateKey);
+        String sPublicKey = ecKeyPair.getPublicKey().toString(16);
+        String sPrivateKey = ecKeyPair.getPrivateKey().toString(16);
+        String sAddress = "0x" + Keys.getAddress(ecKeyPair);
+        System.out.println("PublicKey in HexString:" + sPublicKey);
+        System.out.println("Private in HexString:" + sPrivateKey);
         System.out.println("Address:" + sAddress);
-        System.out.println("Address:" + sAddress.length());
+
+
+        return ecKeyPair;
     }
 
-    public static void signParams(){
+    public static void signParams(ECKeyPair keyPair) throws SignatureException {
 
         //使用keccak256打包参数
         String[] testAddress = new String[]{"0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"};
         String[] testTypes = new String[]{"属性", "关闭"};
-        byte[] packageResult = sign(testAddress, testTypes);
-        String strPackage = bytesToHex(packageResult); //转换成16进制字符串, 与solidity相同
+        byte[] packageResult = signParam(testAddress, testTypes); //将参数打包
+        String strPackage =  Numeric.toHexString(packageResult); //转换成16进制字符串, 与solidity测试结果相同
         System.out.println("PackageResult in HexString:" + strPackage);
 
         //私钥签名
-        byte[] a = new byte[]{1, 2, 3, 4};
-        ECDSASign sign = new ECDSASign();
-//        Sign.SignatureData b = sign.signMessage(a, ecKeyPair);
-//        Sign.signMessage(a, ecKeyPair);
-//        System.out.println(b.hashCode());
+        Sign.SignatureData signMessage = Sign.signMessage(packageResult, keyPair);
+        // 获取验证所需的 v r s
+        Uint8 v = new Uint8(signMessage.getV());
+        Bytes32 r = new Bytes32(signMessage.getR());
+        Bytes32 s = new Bytes32(signMessage.getS());
+        System.out.println("hash:" + Numeric.toHexString(packageResult));
+        System.out.println("v:" + signMessage.getV());
+        System.out.println("r:" + Numeric.toHexString(signMessage.getR()));
+        System.out.println("s:" + Numeric.toHexString(signMessage.getS()));
+
+        String pubKey = Sign.signedMessageToKey(packageResult, signMessage).toString(16);//验证方法 不用
     }
 
 
     //签名函数,根据传入参数进行动态调整
     // 返回byte[]
-    public static byte[] sign(String[] addrs, String[] types) {
+    public static byte[] signParam(String[] addrs, String[] types) {
         // 初始化
         byte[] byteAddr = "".getBytes(); // 用于保存地址字节数组
         String allTypes = ""; // 用于保存类型字符串
@@ -79,25 +86,6 @@ public class tryTest {
     }
 
     /* 工具方法 */
-    // bytes转16进制string
-    private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-    private static String bytesToHex(byte[] bytes) {
-        char[] buf = new char[bytes.length * 2];
-        int a = 0;
-        int index = 0;
-        for (byte b : bytes) {
-            if (b < 0) {
-                a = 256 + b;
-            } else {
-                a = b;
-            }
-            buf[index++] = HEX_CHAR[a / 16];
-            buf[index++] = HEX_CHAR[a % 16];
-        }
-        return "0x" + new String(buf);
-    }
-
     // 16进制string转bytes
     public static byte[] toBytes(String str) {
         if (str == null || str.trim().equals("")) {
