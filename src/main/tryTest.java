@@ -2,14 +2,15 @@ package main;
 
 import org.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.bcos.web3j.abi.datatypes.generated.Uint8;
-import org.bcos.web3j.crypto.*;
-import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.utils.Numeric;
+import org.bcos.web3j.crypto.*;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
-import java.util.Arrays;
+import java.security.interfaces.ECKey;
+
+//import org.bcos.web3j.crypto.*;
 
 public class tryTest {
 
@@ -32,9 +33,11 @@ public class tryTest {
         String sPublicKey = ecKeyPair.getPublicKey().toString(16);
         String sPrivateKey = ecKeyPair.getPrivateKey().toString(16);
         String sAddress = "0x" + Keys.getAddress(ecKeyPair);
+
         System.out.println("PublicKey in HexString:" + sPublicKey);
         System.out.println("Private in HexString:" + sPrivateKey);
         System.out.println("Address:" + sAddress);
+        System.out.println("Address:" + Numeric.toHexString(sAddress.getBytes()));
 
 
         return ecKeyPair;

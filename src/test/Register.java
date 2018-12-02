@@ -16,7 +16,6 @@ import org.bcos.web3j.abi.datatypes.Event;
 import org.bcos.web3j.abi.datatypes.Function;
 import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.abi.datatypes.Utf8String;
-import org.bcos.web3j.abi.datatypes.generated.Uint8;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.core.DefaultBlockParameter;
@@ -36,9 +35,9 @@ import rx.functions.Func1;
  * <p>Generated with web3j version none.
  */
 public final class Register extends Contract {
-    private static String BINARY = "6060604052341561000c57fe5b5b610c4b8061001c6000396000f30060606040523615610076576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806353162558146100785780638c83e25a146100c65780639185b15a14610133578063c3799525146101ac578063e4ea75af14610219578063e617fe9f14610267575bfe5b341561008057fe5b6100ac600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506102fc565b604051808215151515815260200191505060405180910390f35b34156100ce57fe5b610119600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506103bc565b604051808215151515815260200191505060405180910390f35b341561013b57fe5b610192600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803560ff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610526565b604051808215151515815260200191505060405180910390f35b34156101b457fe5b6101ff600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610770565b604051808215151515815260200191505060405180910390f35b341561022157fe5b61024d600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610842565b604051808215151515815260200191505060405180910390f35b341561026f57fe5b6102e2600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091908035906020019082018035906020019190919290803590602001908201803590602001919091929050506109a7565b604051808215151515815260200191505060405180910390f35b6000600061030d8360006000610526565b1561031b57600091506103b6565b600360008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050828160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600260008154809291906001019190505550600191505b50919050565b6000600060006103ce84600287610526565b156103dc576000925061051e565b600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209150600073ffffffffffffffffffffffffffffffffffffffff168260000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16141561047f576000925061051e565b8160020160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002090508160010160008154809291906001019190505550838160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600192505b505092915050565b60008260ff16600060ff1614156105cf578373ffffffffffffffffffffffffffffffffffffffff16600360008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16149050610769565b8260ff16600160ff1614156106b6578373ffffffffffffffffffffffffffffffffffffffff16600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16149050610769565b8260ff16600260ff16141561075d578373ffffffffffffffffffffffffffffffffffffffff16600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16149050610769565b60009050610769565b5b5b5b9392505050565b60006000600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002090508060010160008154809291906001900391905055508060020160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006000820160006101000a81549073ffffffffffffffffffffffffffffffffffffffff02191690555050600191505b5092915050565b60006108518260016000610526565b1561085f57600090506109a2565b81600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600101819055506000600081548092919060010191905055507f885a8574ca0fa9322e140a8278258d0be286859f02bcbb856fe906cb50fda4cb82604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390a1600190505b919050565b600060006000600160008a73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209150600073ffffffffffffffffffffffffffffffffffffffff168260000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610a505760009250610b6e565b8160020160008973ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050600073ffffffffffffffffffffffffffffffffffffffff168160000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610af55760009250610b6e565b86868260010189896040518083838082843782019150509250505090815260200160405180910390206000019190610b2e929190610b7a565b5084848260010189896040518083838082843782019150509250505090815260200160405180910390206001019190610b68929190610b7a565b50600192505b50509695505050505050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610bbb57803560ff1916838001178555610be9565b82800160010185558215610be9579182015b82811115610be8578235825591602001919060010190610bcd565b5b509050610bf69190610bfa565b5090565b610c1c91905b80821115610c18576000816000905550600101610c00565b5090565b905600a165627a7a723058203668eef7aa889c8cac850c226594acb977335bffbef14a357948353f31dd9f0b0029";
+    private static String BINARY = "6060604052341561000c57fe5b5b61138b8061001c6000396000f3006060604052361561008c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063531625581461008e5780635d2a7637146100dc5780638c83e25a1461012a578063a6a5021214610197578063c3799525146101e5578063e4ea75af14610252578063e617fe9f146102a0578063f459f5a214610335575bfe5b341561009657fe5b6100c2600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506103a2565b604051808215151515815260200191505060405180910390f35b34156100e457fe5b610110600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506105b0565b604051808215151515815260200191505060405180910390f35b341561013257fe5b61017d600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190505061064b565b604051808215151515815260200191505060405180910390f35b341561019f57fe5b6101cb600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506109ae565b604051808215151515815260200191505060405180910390f35b34156101ed57fe5b610238600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a49565b604051808215151515815260200191505060405180910390f35b341561025a57fe5b610286600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610bc0565b604051808215151515815260200191505060405180910390f35b34156102a857fe5b61031b600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001919091929080359060200190820180359060200191909192905050610e10565b604051808215151515815260200191505060405180910390f35b341561033d57fe5b610388600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506111de565b604051808215151515815260200191505060405180910390f35b600060006103af836105b0565b15610466577f1a8006d324205832eb7071928be447b54e48c9bf090f363212bdac67aff25dac336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182151515158152602001806020018281038252600f8152602001807fe794a8e688b7e5b7b2e6b3a8e5868c0000000000000000000000000000000000815250602001935050505060405180910390a1600091506105aa565b600360008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050828160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506002600081548092919060010191905055507f1a8006d324205832eb7071928be447b54e48c9bf090f363212bdac67aff25dac336001604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260128152602001807fe794a8e688b7e6b3a8e5868ce68890e58a9f0000000000000000000000000000815250602001935050505060405180910390a1600191505b50919050565b60008173ffffffffffffffffffffffffffffffffffffffff16600360008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161490505b919050565b60006000600061065b85856111de565b15610712577f2590971dad0b3355b3062e2e354fab7494d749a0db6be74501d93694d96cf7ec336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182151515158152602001806020018281038252600f8152602001807fe8aebee5a487e5b7b2e6b3a8e5868c0000000000000000000000000000000000815250602001935050505060405180910390a1600092506109a6565b600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209150600073ffffffffffffffffffffffffffffffffffffffff168260000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16141561085e577f2590971dad0b3355b3062e2e354fab7494d749a0db6be74501d93694d96cf7ec336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182151515158152602001806020018281038252601b8152602001807fe5bd93e5898de697a0e5b7b2e6b3a8e5868ce79a84e5b9b3e58fb00000000000815250602001935050505060405180910390a1600092506109a6565b8160020160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002090508160010160008154809291906001019190505550838160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055507f2590971dad0b3355b3062e2e354fab7494d749a0db6be74501d93694d96cf7ec336001604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260128152602001807fe8aebee5a487e6b3a8e5868ce68890e58a9f0000000000000000000000000000815250602001935050505060405180910390a1600192505b505092915050565b60008173ffffffffffffffffffffffffffffffffffffffff16600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161490505b919050565b60006000600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002090508060010160008154809291906001900391905055508060020160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006000820160006101000a81549073ffffffffffffffffffffffffffffffffffffffff021916905550507fd7fedc4e21c1e8c868c39947f237cbc93d69fb546f4f30807d089ce2903e913c336001604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260158152602001807fe8aebee5a487e8a7a3e6b3a8e5868ce68890e58a9f0000000000000000000000815250602001935050505060405180910390a15b5092915050565b6000610bcb826109ae565b15610c82577fd81954d18e3f69b83c68deea82450921ca577eb54d94994fff701132edfd656b336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182151515158152602001806020018281038252600f8152602001807fe5b9b3e58fb0e5b7b2e6b3a8e5868c0000000000000000000000000000000000815250602001935050505060405180910390a160009050610e0b565b81600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600101819055506000600081548092919060010191905055507fd81954d18e3f69b83c68deea82450921ca577eb54d94994fff701132edfd656b336001604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200182151515158152602001806020018281038252600c8152602001807fe6b3a8e5868ce68890e58a9f0000000000000000000000000000000000000000815250602001935050505060405180910390a1600190505b919050565b600060006000600160008a73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209150600073ffffffffffffffffffffffffffffffffffffffff168260000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610f62577f87098308100b9295fda0e232be65e65af3ad95b4787d64dabc48e6c371bf6b0c336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260158152602001807fe697a0e5b7b2e6b3a8e5868ce79a84e5b9b3e58fb00000000000000000000000815250602001935050505060405180910390a1600092506111d2565b8160020160008973ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050600073ffffffffffffffffffffffffffffffffffffffff168160000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1614156110b0577f87098308100b9295fda0e232be65e65af3ad95b4787d64dabc48e6c371bf6b0c336000604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260158152602001807fe697a0e5b7b2e6b3a8e5868ce79a84e8aebee5a4870000000000000000000000815250602001935050505060405180910390a1600092506111d2565b868682600101898960405180838380828437820191505092505050908152602001604051809103902060000191906110e99291906112ba565b50848482600101898960405180838380828437820191505092505050908152602001604051809103902060010191906111239291906112ba565b507f87098308100b9295fda0e232be65e65af3ad95b4787d64dabc48e6c371bf6b0c336001604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018215151515815260200180602001828103825260188152602001807fe8aebee5a487e5b19ee680a7e8aebee7bdaee68890e58a9f0000000000000000815250602001935050505060405180910390a1600192505b50509695505050505050565b60008173ffffffffffffffffffffffffffffffffffffffff16600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161490505b92915050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106112fb57803560ff1916838001178555611329565b82800160010185558215611329579182015b8281111561132857823582559160200191906001019061130d565b5b509050611336919061133a565b5090565b61135c91905b80821115611358576000816000905550600101611340565b5090565b905600a165627a7a7230582028a879574198d592ce66ae09f3d2d5aa06fb8a9989594c31917698412172a4040029";
 
-    public static final String ABI = "[{\"constant\":false,\"inputs\":[{\"name\":\"userAddr\",\"type\":\"address\"}],\"name\":\"userRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"}],\"name\":\"devicesRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"},{\"name\":\"opCode\",\"type\":\"uint8\"},{\"name\":\"platAddr\",\"type\":\"address\"}],\"name\":\"checkRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"}],\"name\":\"deviceUnRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"}],\"name\":\"platformRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"},{\"name\":\"attrType\",\"type\":\"string\"},{\"name\":\"attrState\",\"type\":\"string\"}],\"name\":\"devicesSetAttr\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"platAddr\",\"type\":\"address\"}],\"name\":\"platformRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"devicesRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"devicesSetAttrEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"deviceUnRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"userRegisterEvent\",\"type\":\"event\"}]";
+    public static final String ABI = "[{\"constant\":false,\"inputs\":[{\"name\":\"userAddr\",\"type\":\"address\"}],\"name\":\"userRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"checkUserRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"}],\"name\":\"devicesRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"checkPlatformRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"}],\"name\":\"deviceUnRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"}],\"name\":\"platformRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"deviceAddr\",\"type\":\"address\"},{\"name\":\"attrType\",\"type\":\"string\"},{\"name\":\"attrState\",\"type\":\"string\"}],\"name\":\"devicesSetAttr\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"platAddr\",\"type\":\"address\"},{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"checkDeviceRegister\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"result\",\"type\":\"bool\"},{\"indexed\":false,\"name\":\"message\",\"type\":\"string\"}],\"name\":\"platformRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"result\",\"type\":\"bool\"},{\"indexed\":false,\"name\":\"message\",\"type\":\"string\"}],\"name\":\"devicesRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"result\",\"type\":\"bool\"},{\"indexed\":false,\"name\":\"message\",\"type\":\"string\"}],\"name\":\"devicesSetAttrEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"result\",\"type\":\"bool\"},{\"indexed\":false,\"name\":\"message\",\"type\":\"string\"}],\"name\":\"deviceUnRegisterEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"result\",\"type\":\"bool\"},{\"indexed\":false,\"name\":\"message\",\"type\":\"string\"}],\"name\":\"userRegisterEvent\",\"type\":\"event\"}]";
 
     private Register(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit, isInitByName);
@@ -59,12 +58,14 @@ public final class Register extends Contract {
     public static List<PlatformRegisterEventEventResponse> getPlatformRegisterEventEvents(TransactionReceipt transactionReceipt) {
         final Event event = new Event("platformRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
         ArrayList<PlatformRegisterEventEventResponse> responses = new ArrayList<PlatformRegisterEventEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             PlatformRegisterEventEventResponse typedResponse = new PlatformRegisterEventEventResponse();
-            typedResponse.platAddr = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+            typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
             responses.add(typedResponse);
         }
         return responses;
@@ -73,7 +74,7 @@ public final class Register extends Contract {
     public Observable<PlatformRegisterEventEventResponse> platformRegisterEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         final Event event = new Event("platformRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, PlatformRegisterEventEventResponse>() {
@@ -81,7 +82,9 @@ public final class Register extends Contract {
             public PlatformRegisterEventEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 PlatformRegisterEventEventResponse typedResponse = new PlatformRegisterEventEventResponse();
-                typedResponse.platAddr = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+                typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
                 return typedResponse;
             }
         });
@@ -90,11 +93,14 @@ public final class Register extends Contract {
     public static List<DevicesRegisterEventEventResponse> getDevicesRegisterEventEvents(TransactionReceipt transactionReceipt) {
         final Event event = new Event("devicesRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
         ArrayList<DevicesRegisterEventEventResponse> responses = new ArrayList<DevicesRegisterEventEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             DevicesRegisterEventEventResponse typedResponse = new DevicesRegisterEventEventResponse();
+            typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+            typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
             responses.add(typedResponse);
         }
         return responses;
@@ -103,7 +109,7 @@ public final class Register extends Contract {
     public Observable<DevicesRegisterEventEventResponse> devicesRegisterEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         final Event event = new Event("devicesRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, DevicesRegisterEventEventResponse>() {
@@ -111,6 +117,9 @@ public final class Register extends Contract {
             public DevicesRegisterEventEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 DevicesRegisterEventEventResponse typedResponse = new DevicesRegisterEventEventResponse();
+                typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+                typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
                 return typedResponse;
             }
         });
@@ -119,11 +128,14 @@ public final class Register extends Contract {
     public static List<DevicesSetAttrEventEventResponse> getDevicesSetAttrEventEvents(TransactionReceipt transactionReceipt) {
         final Event event = new Event("devicesSetAttrEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
         ArrayList<DevicesSetAttrEventEventResponse> responses = new ArrayList<DevicesSetAttrEventEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             DevicesSetAttrEventEventResponse typedResponse = new DevicesSetAttrEventEventResponse();
+            typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+            typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
             responses.add(typedResponse);
         }
         return responses;
@@ -132,7 +144,7 @@ public final class Register extends Contract {
     public Observable<DevicesSetAttrEventEventResponse> devicesSetAttrEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         final Event event = new Event("devicesSetAttrEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, DevicesSetAttrEventEventResponse>() {
@@ -140,6 +152,9 @@ public final class Register extends Contract {
             public DevicesSetAttrEventEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 DevicesSetAttrEventEventResponse typedResponse = new DevicesSetAttrEventEventResponse();
+                typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+                typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
                 return typedResponse;
             }
         });
@@ -148,11 +163,14 @@ public final class Register extends Contract {
     public static List<DeviceUnRegisterEventEventResponse> getDeviceUnRegisterEventEvents(TransactionReceipt transactionReceipt) {
         final Event event = new Event("deviceUnRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
         ArrayList<DeviceUnRegisterEventEventResponse> responses = new ArrayList<DeviceUnRegisterEventEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             DeviceUnRegisterEventEventResponse typedResponse = new DeviceUnRegisterEventEventResponse();
+            typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+            typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
             responses.add(typedResponse);
         }
         return responses;
@@ -161,7 +179,7 @@ public final class Register extends Contract {
     public Observable<DeviceUnRegisterEventEventResponse> deviceUnRegisterEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         final Event event = new Event("deviceUnRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, DeviceUnRegisterEventEventResponse>() {
@@ -169,6 +187,9 @@ public final class Register extends Contract {
             public DeviceUnRegisterEventEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 DeviceUnRegisterEventEventResponse typedResponse = new DeviceUnRegisterEventEventResponse();
+                typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+                typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
                 return typedResponse;
             }
         });
@@ -177,11 +198,14 @@ public final class Register extends Contract {
     public static List<UserRegisterEventEventResponse> getUserRegisterEventEvents(TransactionReceipt transactionReceipt) {
         final Event event = new Event("userRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         List<EventValues> valueList = extractEventParameters(event, transactionReceipt);
         ArrayList<UserRegisterEventEventResponse> responses = new ArrayList<UserRegisterEventEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             UserRegisterEventEventResponse typedResponse = new UserRegisterEventEventResponse();
+            typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+            typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+            typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
             responses.add(typedResponse);
         }
         return responses;
@@ -190,7 +214,7 @@ public final class Register extends Contract {
     public Observable<UserRegisterEventEventResponse> userRegisterEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         final Event event = new Event("userRegisterEvent", 
                 Arrays.<TypeReference<?>>asList(),
-                Arrays.<TypeReference<?>>asList());
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Bool>() {}, new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, UserRegisterEventEventResponse>() {
@@ -198,6 +222,9 @@ public final class Register extends Contract {
             public UserRegisterEventEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 UserRegisterEventEventResponse typedResponse = new UserRegisterEventEventResponse();
+                typedResponse.sender = (Address) eventValues.getNonIndexedValues().get(0);
+                typedResponse.result = (Bool) eventValues.getNonIndexedValues().get(1);
+                typedResponse.message = (Utf8String) eventValues.getNonIndexedValues().get(2);
                 return typedResponse;
             }
         });
@@ -213,6 +240,13 @@ public final class Register extends Contract {
         executeTransactionAsync(function, callback);
     }
 
+    public Future<Bool> checkUserRegister(Address addr) {
+        Function function = new Function("checkUserRegister", 
+                Arrays.<Type>asList(addr), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeCallSingleValueReturnAsync(function);
+    }
+
     public Future<TransactionReceipt> devicesRegister(Address platAddr, Address deviceAddr) {
         Function function = new Function("devicesRegister", Arrays.<Type>asList(platAddr, deviceAddr), Collections.<TypeReference<?>>emptyList());
         return executeTransactionAsync(function);
@@ -223,9 +257,9 @@ public final class Register extends Contract {
         executeTransactionAsync(function, callback);
     }
 
-    public Future<Bool> checkRegister(Address addr, Uint8 opCode, Address platAddr) {
-        Function function = new Function("checkRegister", 
-                Arrays.<Type>asList(addr, opCode, platAddr), 
+    public Future<Bool> checkPlatformRegister(Address addr) {
+        Function function = new Function("checkPlatformRegister", 
+                Arrays.<Type>asList(addr), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeCallSingleValueReturnAsync(function);
     }
@@ -260,6 +294,13 @@ public final class Register extends Contract {
         executeTransactionAsync(function, callback);
     }
 
+    public Future<Bool> checkDeviceRegister(Address platAddr, Address addr) {
+        Function function = new Function("checkDeviceRegister", 
+                Arrays.<Type>asList(platAddr, addr), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeCallSingleValueReturnAsync(function);
+    }
+
     public static Future<Register> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger initialWeiValue) {
         return deployAsync(Register.class, web3j, credentials, gasPrice, gasLimit, BINARY, "", initialWeiValue);
     }
@@ -285,18 +326,42 @@ public final class Register extends Contract {
     }
 
     public static class PlatformRegisterEventEventResponse {
-        public Address platAddr;
+        public Address sender;
+
+        public Bool result;
+
+        public Utf8String message;
     }
 
     public static class DevicesRegisterEventEventResponse {
+        public Address sender;
+
+        public Bool result;
+
+        public Utf8String message;
     }
 
     public static class DevicesSetAttrEventEventResponse {
+        public Address sender;
+
+        public Bool result;
+
+        public Utf8String message;
     }
 
     public static class DeviceUnRegisterEventEventResponse {
+        public Address sender;
+
+        public Bool result;
+
+        public Utf8String message;
     }
 
     public static class UserRegisterEventEventResponse {
+        public Address sender;
+
+        public Bool result;
+
+        public Utf8String message;
     }
 }

@@ -4,9 +4,8 @@ import example.bcosliteclient;
 import org.bcos.channel.client.Service;
 import org.bcos.channel.client.TransactionSucCallback;
 import org.bcos.channel.dto.EthereumResponse;
-import org.bcos.web3j.abi.datatypes.Address;
-import org.bcos.web3j.abi.datatypes.StaticArray;
-import org.bcos.web3j.abi.datatypes.Utf8String;
+import org.bcos.web3j.abi.datatypes.*;
+import org.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.bcos.web3j.abi.datatypes.generated.Int256;
 import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.abi.datatypes.generated.Uint8;
@@ -18,6 +17,7 @@ import org.bcos.web3j.protocol.channel.ChannelEthereumService;
 import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.bcos.web3j.protocol.core.methods.response.Log;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.bcos.web3j.utils.Numeric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +25,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import test.*;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -41,7 +42,6 @@ public class mainTest {
     // 合约地址
     private static String linkageRuleAddr;
     private static String registerAddr;
-    private static String toolsAddr;
     private static String trustRuleAddr_1;//平台1
     private static String trustRuleAddr_2;//平台2
     private static String userSceneRuleAddr;
@@ -49,141 +49,177 @@ public class mainTest {
     // 成员地址
     public static String userAddr = "0x24602722816b6cad0e143ce9fabf31f6026ec622";//用户地址
     private static String deviceAddr_1 = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";//设备1地址
-    private static String deviceAddr_2 = "0x8F3732276ed0f1B9fEB7A66bC3565aFB4A45FEAa";//设备2地址
+    private static String deviceAddr_2 = "0xf8514b2da9da74903f409bfd6f9a7fc2aa056c93";//设备2地址
     private static String platAddr_1 = "0x1b8cBBf72D2260079c01fd622b284Ed2FBf972A0"; //平台1地址
     private static String platAddr_2 = "0xeA02218208eC9489267De43D4AF2398d7f1BfF88"; //平台2地址
-    private static StaticArray<Address> addr4 = new StaticArray<>(new Address(platAddr_1),new Address(deviceAddr_1),new Address(platAddr_2),new Address(deviceAddr_2));
+    private static StaticArray<Address> addr4 = new StaticArray<>(new Address(platAddr_1), new Address(deviceAddr_1), new Address(platAddr_2), new Address(deviceAddr_2));
+
     /* 部署合约 */
     private static void deploy(String opCode) throws InterruptedException, ExecutionException {
         String contractName = "";
         String contractAddr = "";
         switch (opCode) {
             case "LinkageRule":
-                Future<LinkageRule> linakgeRuleDeploy = LinkageRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue);
+                Future<LinkageRule> linakgeRuleDeploy = LinkageRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
                 LinkageRule linkageRule = linakgeRuleDeploy.get();
-                contractName = linkageRule.getContractName();
+                contractName = "linkageRuleAddr";
                 contractAddr = linkageRule.getContractAddress();
                 linkageRuleAddr = contractAddr;
                 break;
             case "Register":
                 Future<Register> registerDeploy = Register.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue);
                 Register register = registerDeploy.get();
-                contractName = register.getContractName();
+                contractName = "registerAddr";
                 contractAddr = register.getContractAddress();
                 registerAddr = contractAddr;
-                break;
-            case "Tools":
-                Future<Tools> toolsDeploy = Tools.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue);
-                Tools tools = toolsDeploy.get();
-                contractName = tools.getContractName();
-                contractAddr = tools.getContractAddress();
-                toolsAddr = contractAddr;
                 break;
             case "TrustRule_1":
                 Future<TrustRule> trustRuleDeploy = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
                 TrustRule trustRule = trustRuleDeploy.get();
-                contractName = trustRule.getContractName();
+                contractName = "trustRuleAddr_1";
                 contractAddr = trustRule.getContractAddress();
                 trustRuleAddr_1 = contractAddr;
                 break;
             case "TrustRule_2":
                 Future<TrustRule> trustRuleDeploy_2 = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
                 TrustRule trustRule_2 = trustRuleDeploy_2.get();
-                contractName = trustRule_2.getContractName();
+                contractName = "trustRuleAddr_2";
                 contractAddr = trustRule_2.getContractAddress();
                 trustRuleAddr_2 = contractAddr;
                 break;
             case "UserSceneRule":
                 Future<UserSceneRule> userSceneRuleDeploy = UserSceneRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
                 UserSceneRule userSceneRule = userSceneRuleDeploy.get();
-                contractName = userSceneRule.getContractName();
+                contractName = "userSceneRuleAddr";
                 contractAddr = userSceneRule.getContractAddress();
                 userSceneRuleAddr = contractAddr;
                 break;
         }
-        System.out.println("Deploy contract :" + contractName + ",address :" + registerAddr);
+        System.out.println(contractName + " = \"" + contractAddr + "\";");
     }
+
 
     /* 注册合约测试 */
+    // 都使用get()方法同步执行
     public static void registerTest() throws ExecutionException, InterruptedException {
-        deploy("Register");
         Register register = Register.load(registerAddr, web3j, credentials, gasPrice, gasLimit);
         //平台1注册
-//        register.platformRegister(new Address(platAddr_1));
-//        Future<TransactionReceipt> result = register.checkRegister(new Address(platAddr_1),new Uint8(2),new Address(platAddr_1));
-//        TransactionReceipt res = result.get();
-//        System.out.println(result.get());
-//        //平台2注册
-//        register.platformRegister(new Address(platAddr_2));
-//        register.checkRegister(new Address(platAddr_2),new Uint8(2),new Address(""));
-//        //设备1注册
-//        register.devicesRegister(new Address(platAddr_1), new Address(deviceAddr_1));
-//        register.checkRegister(new Address(deviceAddr_1),new Uint8(1),new Address(platAddr_1));
-//        //设备1属性
-//        register.devicesSetAttr(new Address(platAddr_1), new Address(deviceAddr_1), new Utf8String("属性1"), new Utf8String("关闭"));
-//        //用户1注册
-//        register.userRegister(new Address(userAddr));
-//        register.checkRegister(new Address(userAddr),new Uint8(0),new Address(""));
-//        //设备2注册
-//        register.devicesRegister(new Address(platAddr_2), new Address(deviceAddr_2));
-//        register.checkRegister(new Address(deviceAddr_2),new Uint8(1),new Address(platAddr_2));
-//        //设备2属性
-//        register.devicesSetAttr(new Address(platAddr_2), new Address(deviceAddr_2), new Utf8String("属性2"), new Utf8String("关闭"));
+        TransactionReceipt platformRegister = register.platformRegister(new Address(platAddr_1)).get();
+        List<Register.PlatformRegisterEventEventResponse> lstCN = Register.getPlatformRegisterEventEvents(platformRegister);
+        for (int i = 0; i < lstCN.size(); i++) {
+            Register.PlatformRegisterEventEventResponse response = lstCN.get(i);
+            System.out.println("平台1 注册事件返回:" + response.message.getValue());
+        }
+        Future<Bool> result1 = register.checkPlatformRegister(new Address(platAddr_1));
+        System.out.println("查询平台1 注册查询结果:" + result1.get().getValue());
+        //平台2注册
+        register.platformRegister(new Address(platAddr_2)).get();
+        Future<Bool> result2 = register.checkPlatformRegister(new Address(platAddr_2));
+        System.out.println("查询平台2 注册结果:" + result2.get().getValue());
+        //设备1注册
+        register.devicesRegister(new Address(platAddr_1), new Address(deviceAddr_1)).get();
+        Future<Bool> result3 = register.checkDeviceRegister(new Address(platAddr_1), new Address(deviceAddr_1));
+        System.out.println("查询设备1 注册结果:" + result3.get().getValue());
+        //设备1添加属性
+        register.devicesSetAttr(new Address(platAddr_1), new Address(deviceAddr_1), new Utf8String("属性1"), new Utf8String("关闭")).get();
+        //用户1注册
+        register.userRegister(new Address(userAddr)).get();
+        Future<Bool> result4 = register.checkUserRegister(new Address(userAddr));
+        System.out.println("用户1 注册结果:" + result4.get().getValue());
+        //设备2注册
+        TransactionReceipt deviceRegister = register.devicesRegister(new Address(platAddr_2), new Address(deviceAddr_2)).get();
+        List<Register.DevicesRegisterEventEventResponse> lstCN2 = Register.getDevicesRegisterEventEvents(deviceRegister);
+        for (int i = 0; i < lstCN2.size(); i++) {
+            Register.DevicesRegisterEventEventResponse response = lstCN2.get(i);
+            System.out.println("设备2 注册事件返回:" + response.message.getValue());
+        }
+        Future<Bool> result5 = register.checkDeviceRegister(new Address(platAddr_2), new Address(deviceAddr_2));
+        System.out.println("查询设备2 注册结果:" + result5.get().getValue());
+        //设备2属性
+        register.devicesSetAttr(new Address(platAddr_2), new Address(deviceAddr_2), new Utf8String("属性2"), new Utf8String("关闭"));
     }
 
-    /* 信任规则合约测试 */
+    /* 信任规则合约测试 都使用同步阻塞方式*/
     public static void trustRuleTest() throws ExecutionException, InterruptedException {
         // 平台1部署信任规则合约
-        deploy("TrustRule_1");
         TrustRule trustRule = TrustRule.load(trustRuleAddr_1, web3j, credentials, gasPrice, gasLimit);
         // 平台1设置信任值
-        trustRule.setTrustThreshold(new Int256(50));
+        TransactionReceipt setTrustThreshold = trustRule.setTrustThreshold(new Int256(50)).get();
+        List<TrustRule.SetTrustThresholdEventEventResponse> lstCN = TrustRule.getSetTrustThresholdEventEvents(setTrustThreshold);
+        for (int i = 0; i < lstCN.size(); i++) {
+            TrustRule.SetTrustThresholdEventEventResponse response = lstCN.get(i);
+            System.out.println("设置信任值 事件返回:" + response.message.getValue());
+        }
         // 平台1添加信任设备1
-        trustRule.setDevices(new Address(deviceAddr_1), new Int256(100), new Uint8(0));
+        TransactionReceipt setDevices = trustRule.setDevices(new Address(deviceAddr_1), new Int256(100), new Uint8(0)).get();
+        List<TrustRule.SetDevicesEventEventResponse> lstCN2 = TrustRule.getSetDevicesEventEvents(setDevices);
+        for (int i = 0; i < lstCN2.size(); i++) {
+            TrustRule.SetDevicesEventEventResponse response = lstCN2.get(i);
+            System.out.println("添加信任设备1 事件返回:" + response.message.getValue());
+        }
         // 检查注册
-        Future<TransactionReceipt> result_1 = trustRule.trustRuleJudge(new Address(platAddr_1), new Address(deviceAddr_1));
-        System.out.println(result_1.get().getLogs());
+        Future<List<Type>> result_1 = trustRule.trustRuleJudgePackage(new Address(platAddr_1), new Address(deviceAddr_1));
+        System.out.println("查询信任设备1 结果:" + result_1.get().get(1).getValue());
         // 平台2部署信任规则合约
-        deploy("TrustRule_2");
         // 平台2设置信任规则合约\信任值\添加设备2
         TrustRule trustRule_2 = TrustRule.load(trustRuleAddr_2, web3j, credentials, gasPrice, gasLimit);
-        trustRule_2.setTrustThreshold(new Int256(50));
-        trustRule.setDevices(new Address(deviceAddr_2), new Int256(100), new Uint8(0));
+        trustRule_2.setTrustThreshold(new Int256(50)).get();
+        trustRule.setDevices(new Address(deviceAddr_2), new Int256(100), new Uint8(0)).get();
     }
 
     /* 用户规则合约测试 */
     public static void userSceneRuleTest() throws ExecutionException, InterruptedException {
-        // 用户1部署用户场景规则合约
-        deploy("UserSceneRule");
+        // 获取用户1场景规则合约
         UserSceneRule userSceneRule = UserSceneRule.load(userSceneRuleAddr, web3j, credentials, gasPrice, gasLimit);
         // 添加用户场景
-        userSceneRule.addUserSceneRule(addr4,new Utf8String("属性1"),new Address(linkageRuleAddr),new Address(trustRuleAddr_1));
+        TransactionReceipt addUserSceneRule = userSceneRule.addUserSceneRule(addr4, new Utf8String("属性1"), new Address(linkageRuleAddr), new Address(trustRuleAddr_1)).get();
+        List<UserSceneRule.AddUserSceneRuleEventEventResponse> lstCN1 = UserSceneRule.getAddUserSceneRuleEventEvents(addUserSceneRule);
+        for (int i = 0; i < lstCN1.size(); i++) {
+            UserSceneRule.AddUserSceneRuleEventEventResponse response = lstCN1.get(i);
+            System.out.println("添加用户场景 事件返回:" + response.message.getValue());
+        }
         // 检查用户规则是否存在
-//        Future<TransactionReceipt> result_1 = userSceneRule.checkUserSceneRule(addr4,new Utf8String("属性1"));
-//        result_1.get().getLogs();
+        Future<List<Type>> result_1 = userSceneRule.checkUserSceneRule(addr4, new Utf8String("属性1"));
+        System.out.println("检查用户规则 添加结果:" + result_1.get().get(1).getValue());
     }
 
     /* 联动规则合约测试 */
     public static void linkageRuleTest() throws ExecutionException, InterruptedException {
-        // 平台1部署联动规则合约
-        deploy("LinkageRule");
+        // 获取平台1联动规则合约
         LinkageRule linkageRule = LinkageRule.load(linkageRuleAddr, web3j, credentials, gasPrice, gasLimit);
         // 设置联动规则
-        linkageRule.addLinkageRule(addr4, new Utf8String("属性1"));
+        TransactionReceipt addUserSceneRule = linkageRule.addLinkageRule(addr4, new Utf8String("属性1")).get();
+        List<LinkageRule.AddLinkageRuleEventEventResponse> lstCN1 = LinkageRule.getAddLinkageRuleEventEvents(addUserSceneRule);
+        for (int i = 0; i < lstCN1.size(); i++) {
+            LinkageRule.AddLinkageRuleEventEventResponse response = lstCN1.get(i);
+            System.out.println("添加用户场景 事件返回:" + response.message.getValue());
+        }
         // 检查联动规则
-//        Future<TransactionReceipt> result_1 = linkageRule.checkLinkageRule(addr4,new Utf8String("属性1"));
-//        result_1.get().getLogs();
+        Future<List<Type>> result_1 = linkageRule.checkLinkageRule(addr4, new Utf8String("属性1"));
+        System.out.println("检查用户规则 添加结果:" + result_1.get().get(1).getValue());
     }
 
     /* 联动测试 */
     public static void transactionTest() throws ExecutionException, InterruptedException {
-        // 通过平台1部署的信任规则合约发起交易
         TrustRule trustRule = TrustRule.load(trustRuleAddr_1, web3j, credentials, gasPrice, gasLimit);
-        Future<TransactionReceipt> result_1 = trustRule.startLinking(addr4, new Utf8String("属性1"), new Utf8String("打开"), new Address(userSceneRuleAddr));
-        // 查询交易记录 TODO
-        String hash = result_1.get().getTransactionHash();
+        // 通过平台1部署的信任规则合约发起交易
+
+        TransactionReceipt startLinking = trustRule.startLinking(addr4, new Utf8String("属性1"), new Utf8String("打开"), new Address(userSceneRuleAddr)).get();
+        List<LinkageRule.LinkageRuleEventEventResponse> lstCN1 = LinkageRule.getLinkageRuleEventEvents(startLinking);
+        for (int i = 0; i < lstCN1.size(); i++) {
+            LinkageRule.LinkageRuleEventEventResponse response = lstCN1.get(i);
+            System.out.println("添加用户场景 事件返回:" + response.message.getValue());
+        }
+        // 查询交易记录
         LinkageRule linkageRule = LinkageRule.load(linkageRuleAddr, web3j, credentials, gasPrice, gasLimit);
-        linkageRule.queryRecord(new Uint256(Long.parseLong(hash)));
+        Future<List<Type>> result_1 = linkageRule.queryRecord(new Uint256(0));
+        System.out.println("检查联动记录 联动平台:" + result_1.get().get(0));
+        System.out.println("检查联动记录 联动设备:" + result_1.get().get(1));
+        System.out.println("检查联动记录 控制平台:" + result_1.get().get(2));
+        System.out.println("检查联动记录 控制设备:" + result_1.get().get(3));
+        System.out.println("检查联动记录 控制属性:" + result_1.get().get(4).getValue());
+        System.out.println("检查联动记录 控制状态:" + result_1.get().get(5).getValue());
+        System.out.println("检查联动记录 ID:" + result_1.get().get(6).getValue());
     }
 
     public static void main(String[] args) throws Exception {
@@ -221,18 +257,27 @@ public class mainTest {
         // 4.平台1部署联动规则合约  设置联动规则 检查联动规则 LinkageRule
         // 5.通过平台1部署的信任规则合约发起交易 查询交易记录
 
-//        deploy("Tools");
-//        registerTest();
-//        trustRuleTest();
-//        userSceneRuleTest();
-//        linkageRuleTest();
-//        transactionTest();
+        deployer();
+        registerTest();
+        trustRuleTest();
+        userSceneRuleTest();
+        linkageRuleTest();
+        transactionTest();
 
         /* 打印区块数量 */
         ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
         int finishBlockNumber = ethBlockNumber.getBlockNumber().intValue();
         System.out.println("<--start blockNumber = " + startBlockNumber + ",finish blocknmber=" + finishBlockNumber);
         System.exit(0);
+    }
+
+    /* 集中部署 */
+    static void deployer() throws ExecutionException, InterruptedException {
+        deploy("Register");
+        deploy("TrustRule_1");
+        deploy("TrustRule_2");
+        deploy("LinkageRule");
+        deploy("UserSceneRule");
     }
 
 }
