@@ -53,7 +53,7 @@ public class tryTest {
         System.out.println("PackageResult in HexString:" + strPackage);
 
         //私钥签名
-        Sign.SignatureData signMessage = Sign.signMessage(packageResult, keyPair);
+            Sign.SignatureData signMessage = Sign.signMessage(packageResult, keyPair);
         // 获取验证所需的 v r s
         Uint8 v = new Uint8(signMessage.getV());
         Bytes32 r = new Bytes32(signMessage.getR());

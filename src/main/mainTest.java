@@ -1,11 +1,7 @@
 package main;
 
-import example.bcosliteclient;
 import org.bcos.channel.client.Service;
-import org.bcos.channel.client.TransactionSucCallback;
-import org.bcos.channel.dto.EthereumResponse;
 import org.bcos.web3j.abi.datatypes.*;
-import org.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.bcos.web3j.abi.datatypes.generated.Int256;
 import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.abi.datatypes.generated.Uint8;
@@ -15,23 +11,17 @@ import org.bcos.web3j.crypto.Keys;
 import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.channel.ChannelEthereumService;
 import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
-import org.bcos.web3j.protocol.core.methods.response.Log;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.bcos.web3j.utils.Numeric;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import test.*;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class mainTest {
-    static Logger logger = LoggerFactory.getLogger(bcosliteclient.class);
     public static Web3j web3j;
     // 初始化交易参数
     private static java.math.BigInteger gasPrice = new BigInteger("1");
