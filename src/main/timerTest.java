@@ -1,7 +1,6 @@
 package main;
 
 import org.bcos.channel.client.Service;
-import org.bcos.web3j.abi.datatypes.Int;
 import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.crypto.Credentials;
@@ -9,7 +8,6 @@ import org.bcos.web3j.crypto.ECKeyPair;
 import org.bcos.web3j.crypto.Keys;
 import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.channel.ChannelEthereumService;
-import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.bcos.web3j.utils.Numeric;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -21,10 +19,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.toHexString;
 
 //说明:
 // 受控平台轮询

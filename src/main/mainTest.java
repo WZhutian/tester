@@ -2,6 +2,7 @@ package main;
 
 import org.bcos.channel.client.Service;
 import org.bcos.web3j.abi.datatypes.*;
+import org.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.bcos.web3j.abi.datatypes.generated.Int256;
 import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.abi.datatypes.generated.Uint8;
@@ -12,14 +13,19 @@ import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.channel.ChannelEthereumService;
 import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.bcos.web3j.utils.Numeric;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import test.*;
 
 import java.math.BigInteger;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static main.tryTest.packageParams;
+import static main.tryTest.signParams;
 
 public class mainTest {
     public static Web3j web3j;
@@ -43,6 +49,9 @@ public class mainTest {
     private static String platAddr_1 = "0x1b8cBBf72D2260079c01fd622b284Ed2FBf972A0"; //平台1地址
     private static String platAddr_2 = "0xeA02218208eC9489267De43D4AF2398d7f1BfF88"; //平台2地址
     private static StaticArray<Address> addr4 = new StaticArray<>(new Address(platAddr_1), new Address(deviceAddr_1), new Address(platAddr_2), new Address(deviceAddr_2));
+
+    private static String attrType = "属性1"; //设置属性
+    private static String attrState = "打开"; //设置状态
 
     /* 部署合约 */
     private static void deploy(String opCode) throws InterruptedException, ExecutionException {
@@ -88,6 +97,24 @@ public class mainTest {
         System.out.println(contractName + " = \"" + contractAddr + "\";");
     }
 
+    public static void signTest() throws SignatureException, ExecutionException, InterruptedException {
+        //生成参数
+        String privateKey = "5a0b841d73c934df67fca222ba8446f9915b2834a77bc128499d7dc1d565ea99";
+        String address = "0fa358fb1384e326e7806ca900aad405b8a51657";
+        ECKeyPair keyPair = ECKeyPair.create(new BigInteger(privateKey, 16));
+        //使用keccak256打包参数
+        String[] testAddress = new String[]{platAddr_1, platAddr_2};
+        String[] testTypes = new String[]{attrType, attrState};
+        byte[] packageResult = packageParams(testAddress, testTypes); //将参数打包
+        String strPackage = Numeric.toHexString(packageResult); //转换成16进制字符串, 与solidity测试结果相同
+        System.out.println("PackageResult in HexString: " + strPackage);
+        DynamicArray<Bytes32> tmp = signParams(strPackage, keyPair);// Byte32 [] 直接传给合约
+        // 调用链码
+        Register register = Register.load(registerAddr, web3j, credentials, gasPrice, gasLimit);
+        Future<List<Type>> result = register.test(new Address(platAddr_1), new Address(platAddr_2), new Utf8String(attrType), new Utf8String(attrState), tmp, new Address(address));
+        System.out.println("params参数: " + result.get().get(0));
+        System.out.println("检测结果: " + result.get().get(1).getValue());
+    }
 
     /* 注册合约测试 */
     // 都使用get()方法同步执行
@@ -248,11 +275,12 @@ public class mainTest {
         // 5.通过平台1部署的信任规则合约发起交易 查询交易记录
 
         deployer();
-        registerTest();
-        trustRuleTest();
-        userSceneRuleTest();
-        linkageRuleTest();
-        transactionTest();
+        signTest();
+//        registerTest();
+//        trustRuleTest();
+//        userSceneRuleTest();
+//        linkageRuleTest();
+//        transactionTest();
 
         /* 打印区块数量 */
         ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
@@ -264,10 +292,10 @@ public class mainTest {
     /* 集中部署 */
     static void deployer() throws ExecutionException, InterruptedException {
         deploy("Register");
-        deploy("TrustRule_1");
-        deploy("TrustRule_2");
-        deploy("LinkageRule");
-        deploy("UserSceneRule");
+//        deploy("TrustRule_1");
+//        deploy("TrustRule_2");
+//        deploy("LinkageRule");
+//        deploy("UserSceneRule");
     }
 
 }
