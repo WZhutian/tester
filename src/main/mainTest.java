@@ -1,6 +1,7 @@
 package main;
 
 import org.bcos.channel.client.Service;
+import org.bcos.contract.source.UserCheck;
 import org.bcos.web3j.abi.datatypes.*;
 import org.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.bcos.web3j.abi.datatypes.generated.Int256;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static main.tryTest.getNounceAndTimeStamp;
 import static main.tryTest.packageParams;
 import static main.tryTest.signParams;
 
@@ -35,6 +37,7 @@ public class mainTest {
     private static java.math.BigInteger initialWeiValue = new BigInteger("0");
     private static ECKeyPair keyPair;
     private static Credentials credentials;
+
     // 合约地址
     private static String linkageRuleAddr;
     private static String registerAddr;
@@ -42,14 +45,19 @@ public class mainTest {
     private static String trustRuleAddr_2;//平台2
     private static String userSceneRuleAddr;
 
-    // 成员地址
-    public static String userAddr = "0x24602722816b6cad0e143ce9fabf31f6026ec622";//用户地址
-    private static String deviceAddr_1 = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";//设备1地址
-    private static String deviceAddr_2 = "0xf8514b2da9da74903f409bfd6f9a7fc2aa056c93";//设备2地址
-    private static String platAddr_1 = "0x1b8cBBf72D2260079c01fd622b284Ed2FBf972A0"; //平台1地址
-    private static String platAddr_2 = "0xeA02218208eC9489267De43D4AF2398d7f1BfF88"; //平台2地址
+    // 成员地址与私钥
+    private static String userAddr = "0xe982dcd5069bc0d5c907e1d67a114881b89548cd";//用户地址
+    private static String userPrivateKey = "bf4e4e1c5ca30a2d6797679cadf1ce40c0b0caa088bf43fd4e41f66213ef7a69";//用户私钥
+    private static String deviceAddr_1 = "0xb5ebbfb60bb71c1070cef93e6023ed7d1b1e8002";//设备1地址
+    private static String deviceAddr_1_PrivateKey = "f38259b50b6a4a447dde6999480a5308b26ef9bb9ff8d2699af737834308561d";//设备1私钥
+    private static String deviceAddr_2 = "0xba2691455bf7aad385c754f333573570e5691673";//设备2地址
+    private static String deviceAddr_2_PrivateKey = "336b34bd229f65818f6795567938fdd61d889c14d6c4f4858eb7b5ecab1ba3ca";//设备2私钥
+    private static String platAddr_1 = "0x399bbb50e1b9b5b4623025a1203d70010d8f2763"; //平台1地址
+    private static String platAddr_1_PrivateKey = "e2668140273281d2d8fd10ee8b4ced9e2dbef3a17b457083736e3590e572c85f";//平台1私钥
+    private static String platAddr_2 = "0xc7bfe6df9535c7ade65c4536e115cfb8a6ed69d5"; //平台2地址
+    private static String platAddr_2_PrivateKey = "5b670b973c3eb1f0896b3001eeb78cabe6127222dc30a6735d06b347136f2edf";//平台2私钥
+    // 常用参数
     private static StaticArray<Address> addr4 = new StaticArray<>(new Address(platAddr_1), new Address(deviceAddr_1), new Address(platAddr_2), new Address(deviceAddr_2));
-
     private static String attrType = "属性1"; //设置属性
     private static String attrState = "打开"; //设置状态
 
@@ -59,7 +67,7 @@ public class mainTest {
         String contractAddr = "";
         switch (opCode) {
             case "LinkageRule":
-                Future<LinkageRule> linakgeRuleDeploy = LinkageRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
+                Future<LinkageRule> linakgeRuleDeploy = LinkageRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(platAddr_1), new Address(registerAddr));
                 LinkageRule linkageRule = linakgeRuleDeploy.get();
                 contractName = "linkageRuleAddr";
                 contractAddr = linkageRule.getContractAddress();
@@ -73,21 +81,21 @@ public class mainTest {
                 registerAddr = contractAddr;
                 break;
             case "TrustRule_1":
-                Future<TrustRule> trustRuleDeploy = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
+                Future<TrustRule> trustRuleDeploy = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(platAddr_1), new Address(registerAddr));
                 TrustRule trustRule = trustRuleDeploy.get();
                 contractName = "trustRuleAddr_1";
                 contractAddr = trustRule.getContractAddress();
                 trustRuleAddr_1 = contractAddr;
                 break;
             case "TrustRule_2":
-                Future<TrustRule> trustRuleDeploy_2 = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
+                Future<TrustRule> trustRuleDeploy_2 = TrustRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(platAddr_2), new Address(registerAddr));
                 TrustRule trustRule_2 = trustRuleDeploy_2.get();
                 contractName = "trustRuleAddr_2";
                 contractAddr = trustRule_2.getContractAddress();
                 trustRuleAddr_2 = contractAddr;
                 break;
             case "UserSceneRule":
-                Future<UserSceneRule> userSceneRuleDeploy = UserSceneRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(registerAddr));
+                Future<UserSceneRule> userSceneRuleDeploy = UserSceneRule.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, new Address(userAddr), new Address(registerAddr));
                 UserSceneRule userSceneRule = userSceneRuleDeploy.get();
                 contractName = "userSceneRuleAddr";
                 contractAddr = userSceneRule.getContractAddress();
@@ -97,102 +105,169 @@ public class mainTest {
         System.out.println(contractName + " = \"" + contractAddr + "\";");
     }
 
+    // 重放攻击测试
     public static void signTest() throws SignatureException, ExecutionException, InterruptedException {
         //生成参数
         String privateKey = "5a0b841d73c934df67fca222ba8446f9915b2834a77bc128499d7dc1d565ea99";
-        String address = "0fa358fb1384e326e7806ca900aad405b8a51657";
+//        privateKey = userPrivateKey;
+        String address = "0x0fa358fb1384e326e7806ca900aad405b8a51657";
+//        address = userAddr;
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(privateKey, 16));
         //使用keccak256打包参数
-        String[] testAddress = new String[]{platAddr_1, platAddr_2};
+        String[] testAddress = new String[]{platAddr_1, deviceAddr_1, platAddr_2, deviceAddr_2, address};
         String[] testTypes = new String[]{attrType, attrState};
-        byte[] packageResult = packageParams(testAddress, testTypes); //将参数打包
+        long[] testNTS = getNounceAndTimeStamp();
+        byte[] packageResult = packageParams(testAddress, testTypes, testNTS); //将参数打包
         String strPackage = Numeric.toHexString(packageResult); //转换成16进制字符串, 与solidity测试结果相同
-        System.out.println("PackageResult in HexString: " + strPackage);
-        DynamicArray<Bytes32> tmp = signParams(strPackage, keyPair);// Byte32 [] 直接传给合约
-        // 调用链码
+//        System.out.println("PackageResult in HexString: " + strPackage);
+        DynamicArray<Bytes32> signResult = signParams(strPackage, keyPair);// Byte32 [] 直接传给合约
+        DynamicArray<Uint256> nounceResult = new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]));
+        // 测试1 普通调用
         Register register = Register.load(registerAddr, web3j, credentials, gasPrice, gasLimit);
-        Future<List<Type>> result = register.test(new Address(platAddr_1), new Address(platAddr_2), new Utf8String(attrType), new Utf8String(attrState), tmp, new Address(address));
-        System.out.println("params参数: " + result.get().get(0));
-        System.out.println("检测结果: " + result.get().get(1).getValue());
+        TransactionReceipt test1 = register.test(addr4, new Address(address), new Utf8String(attrType), new Utf8String(attrState), signResult, nounceResult).get();
+        for (Register.DeviceUnRegisterEventEventResponse response : Register.getDeviceUnRegisterEventEvents(test1)) {
+            System.out.println("测试1结果返回:" + response.message.getValue());
+        }
+        // 测试2 重放
+        TransactionReceipt test2 = register.test(addr4, new Address(address), new Utf8String(attrType), new Utf8String(attrState), signResult, nounceResult).get();
+        for (Register.DeviceUnRegisterEventEventResponse response : Register.getDeviceUnRegisterEventEvents(test2)) {
+            System.out.println("测试2结果返回:" + response.message.getValue());
+        }
+        // 测试3 重放旧请求 (修改nounce,减少timestamp)
+        testNTS[0] = testNTS[0] - 1;
+        testNTS[1] = testNTS[1] - 1;
+        byte[] packageResult3 = packageParams(testAddress, testTypes, testNTS); //将参数打包
+        String strPackage3 = Numeric.toHexString(packageResult3); //转换成16进制字符串, 与solidity测试结果相同
+//        System.out.println("PackageResult in HexString: " + strPackage);
+        DynamicArray<Bytes32> signResult3 = signParams(strPackage3, keyPair);
+        DynamicArray<Uint256> nounceResult3 = new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]));
+        TransactionReceipt test3 = register.test(addr4, new Address(address), new Utf8String(attrType), new Utf8String(attrState), signResult3, nounceResult3).get();
+        for (Register.DeviceUnRegisterEventEventResponse response : Register.getDeviceUnRegisterEventEvents(test3)) {
+            System.out.println("测试3结果返回:" + response.message.getValue());
+        }
     }
 
     /* 注册合约测试 */
     // 都使用get()方法同步执行
-    public static void registerTest() throws ExecutionException, InterruptedException {
+    private static void registerTest() throws ExecutionException, InterruptedException, SignatureException {
         Register register = Register.load(registerAddr, web3j, credentials, gasPrice, gasLimit);
         //平台1注册
-        TransactionReceipt platformRegister = register.platformRegister(new Address(platAddr_1)).get();
-        List<Register.PlatformRegisterEventEventResponse> lstCN = Register.getPlatformRegisterEventEvents(platformRegister);
-        for (int i = 0; i < lstCN.size(); i++) {
-            Register.PlatformRegisterEventEventResponse response = lstCN.get(i);
+        ECKeyPair keyPair1 = ECKeyPair.create(new BigInteger(platAddr_1_PrivateKey, 16));
+        long[] testNTS = getNounceAndTimeStamp();
+        DynamicArray<Bytes32> signResult1 = signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair1);//写在外面
+        DynamicArray<Uint256> nounceResult1 = new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]));
+        TransactionReceipt platformRegister = register.platformRegister(new Address(platAddr_1), signResult1, nounceResult1).get();
+        for (Register.PlatformRegisterEventEventResponse response : Register.getPlatformRegisterEventEvents(platformRegister)) {
             System.out.println("平台1 注册事件返回:" + response.message.getValue());
         }
         Future<Bool> result1 = register.checkPlatformRegister(new Address(platAddr_1));
         System.out.println("查询平台1 注册查询结果:" + result1.get().getValue());
         //平台2注册
-        register.platformRegister(new Address(platAddr_2)).get();
+        ECKeyPair keyPair2 = ECKeyPair.create(new BigInteger(platAddr_2_PrivateKey, 16));
+        testNTS = getNounceAndTimeStamp();
+        register.platformRegister(new Address(platAddr_2),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair2),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
         Future<Bool> result2 = register.checkPlatformRegister(new Address(platAddr_2));
         System.out.println("查询平台2 注册结果:" + result2.get().getValue());
         //设备1注册
-        register.devicesRegister(new Address(platAddr_1), new Address(deviceAddr_1)).get();
+        ECKeyPair keyPair3 = ECKeyPair.create(new BigInteger(deviceAddr_1_PrivateKey, 16));
+        testNTS = getNounceAndTimeStamp();
+        register.devicesRegister(new Address(platAddr_1), new Address(deviceAddr_1),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair3),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
         Future<Bool> result3 = register.checkDeviceRegister(new Address(platAddr_1), new Address(deviceAddr_1));
         System.out.println("查询设备1 注册结果:" + result3.get().getValue());
         //设备1添加属性
-        register.devicesSetAttr(new Address(platAddr_1), new Address(deviceAddr_1), new Utf8String("属性1"), new Utf8String("关闭")).get();
+        testNTS = getNounceAndTimeStamp();
+        register.devicesSetAttr(new Address(platAddr_1), new Address(deviceAddr_1), new Utf8String("属性1"), new Utf8String("关闭"),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair3),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
         //用户1注册
-        register.userRegister(new Address(userAddr)).get();
+        ECKeyPair keyPair4 = ECKeyPair.create(new BigInteger(userPrivateKey, 16));
+        testNTS = getNounceAndTimeStamp();
+        register.userRegister(new Address(userAddr),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair4),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
         Future<Bool> result4 = register.checkUserRegister(new Address(userAddr));
         System.out.println("用户1 注册结果:" + result4.get().getValue());
         //设备2注册
-        TransactionReceipt deviceRegister = register.devicesRegister(new Address(platAddr_2), new Address(deviceAddr_2)).get();
-        List<Register.DevicesRegisterEventEventResponse> lstCN2 = Register.getDevicesRegisterEventEvents(deviceRegister);
-        for (int i = 0; i < lstCN2.size(); i++) {
-            Register.DevicesRegisterEventEventResponse response = lstCN2.get(i);
+        ECKeyPair keyPair5 = ECKeyPair.create(new BigInteger(deviceAddr_2_PrivateKey, 16));
+        testNTS = getNounceAndTimeStamp();
+        TransactionReceipt deviceRegister = register.devicesRegister(new Address(platAddr_2), new Address(deviceAddr_2),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair5),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (Register.DevicesRegisterEventEventResponse response : Register.getDevicesRegisterEventEvents(deviceRegister)) {
             System.out.println("设备2 注册事件返回:" + response.message.getValue());
         }
         Future<Bool> result5 = register.checkDeviceRegister(new Address(platAddr_2), new Address(deviceAddr_2));
         System.out.println("查询设备2 注册结果:" + result5.get().getValue());
         //设备2属性
-        register.devicesSetAttr(new Address(platAddr_2), new Address(deviceAddr_2), new Utf8String("属性2"), new Utf8String("关闭"));
+        testNTS = getNounceAndTimeStamp();
+        register.devicesSetAttr(new Address(platAddr_2), new Address(deviceAddr_2), new Utf8String("属性2"), new Utf8String("关闭"),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair4),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1])));
     }
 
     /* 信任规则合约测试 都使用同步阻塞方式*/
-    public static void trustRuleTest() throws ExecutionException, InterruptedException {
-        // 平台1部署信任规则合约
+    private static void trustRuleTest() throws ExecutionException, InterruptedException, SignatureException {
+        // 平台1获取信任规则合约
         TrustRule trustRule = TrustRule.load(trustRuleAddr_1, web3j, credentials, gasPrice, gasLimit);
         // 平台1设置信任值
-        TransactionReceipt setTrustThreshold = trustRule.setTrustThreshold(new Int256(50)).get();
-        List<TrustRule.SetTrustThresholdEventEventResponse> lstCN = TrustRule.getSetTrustThresholdEventEvents(setTrustThreshold);
-        for (int i = 0; i < lstCN.size(); i++) {
-            TrustRule.SetTrustThresholdEventEventResponse response = lstCN.get(i);
-            System.out.println("设置信任值 事件返回:" + response.message.getValue());
+        ECKeyPair keyPair1 = ECKeyPair.create(new BigInteger(platAddr_1_PrivateKey, 16));
+        long[] testNTS = getNounceAndTimeStamp();
+        TransactionReceipt setTrustThreshold = trustRule.setTrustThreshold(new Int256(50),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair1),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (TrustRule.SetTrustThresholdEventEventResponse response : TrustRule.getSetTrustThresholdEventEvents(setTrustThreshold)) {
+            System.out.println("平台1设置信任值 事件返回:" + response.message.getValue());
         }
         // 平台1添加信任设备1
-        TransactionReceipt setDevices = trustRule.setDevices(new Address(deviceAddr_1), new Int256(100), new Uint8(0)).get();
-        List<TrustRule.SetDevicesEventEventResponse> lstCN2 = TrustRule.getSetDevicesEventEvents(setDevices);
-        for (int i = 0; i < lstCN2.size(); i++) {
-            TrustRule.SetDevicesEventEventResponse response = lstCN2.get(i);
-            System.out.println("添加信任设备1 事件返回:" + response.message.getValue());
+        testNTS = getNounceAndTimeStamp();
+        TransactionReceipt setDevices = trustRule.setDevices(new Address(deviceAddr_1), new Int256(100), new Uint8(0),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair1),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (TrustRule.SetDevicesEventEventResponse response : TrustRule.getSetDevicesEventEvents(setDevices)) {
+            System.out.println("平台1添加信任设备1 事件返回:" + response.message.getValue());
         }
         // 检查注册
         Future<List<Type>> result_1 = trustRule.trustRuleJudgePackage(new Address(platAddr_1), new Address(deviceAddr_1));
-        System.out.println("查询信任设备1 结果:" + result_1.get().get(1).getValue());
-        // 平台2部署信任规则合约
-        // 平台2设置信任规则合约\信任值\添加设备2
+        System.out.println("查询平台1信任设备1 结果:" + result_1.get().get(1).getValue());
+        // 平台2读取信任规则合约
         TrustRule trustRule_2 = TrustRule.load(trustRuleAddr_2, web3j, credentials, gasPrice, gasLimit);
-        trustRule_2.setTrustThreshold(new Int256(50)).get();
-        trustRule.setDevices(new Address(deviceAddr_2), new Int256(100), new Uint8(0)).get();
+        // 平台2设置信任信任值\
+        ECKeyPair keyPair2 = ECKeyPair.create(new BigInteger(platAddr_2_PrivateKey, 16));
+        testNTS = getNounceAndTimeStamp();
+        TransactionReceipt setTrustThreshold2 = trustRule_2.setTrustThreshold(new Int256(50),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair2),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (TrustRule.SetTrustThresholdEventEventResponse response : TrustRule.getSetTrustThresholdEventEvents(setTrustThreshold2)) {
+            System.out.println("平台2设置信任值 事件返回:" + response.message.getValue());
+        }
+        // 添加设备2
+        testNTS = getNounceAndTimeStamp();
+        TransactionReceipt setDevices2 = trustRule_2.setDevices(new Address(deviceAddr_2), new Int256(100), new Uint8(0),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair2),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (TrustRule.SetDevicesEventEventResponse response : TrustRule.getSetDevicesEventEvents(setDevices2)) {
+            System.out.println("平台2添加信任设备2 事件返回:" + response.message.getValue());
+        }
+        // 检查注册
+        Future<List<Type>> result_2 = trustRule_2.trustRuleJudgePackage(new Address(platAddr_2), new Address(deviceAddr_2));
+        System.out.println("查询平台2信任设备2 结果:" + result_2.get().get(1).getValue());
     }
 
     /* 用户规则合约测试 */
-    public static void userSceneRuleTest() throws ExecutionException, InterruptedException {
+    private static void userSceneRuleTest() throws ExecutionException, InterruptedException, SignatureException {
         // 获取用户1场景规则合约
         UserSceneRule userSceneRule = UserSceneRule.load(userSceneRuleAddr, web3j, credentials, gasPrice, gasLimit);
         // 添加用户场景
-        TransactionReceipt addUserSceneRule = userSceneRule.addUserSceneRule(addr4, new Utf8String("属性1"), new Address(linkageRuleAddr), new Address(trustRuleAddr_1)).get();
-        List<UserSceneRule.AddUserSceneRuleEventEventResponse> lstCN1 = UserSceneRule.getAddUserSceneRuleEventEvents(addUserSceneRule);
-        for (int i = 0; i < lstCN1.size(); i++) {
-            UserSceneRule.AddUserSceneRuleEventEventResponse response = lstCN1.get(i);
+        long[] testNTS = getNounceAndTimeStamp();
+        ECKeyPair keyPair1 = ECKeyPair.create(new BigInteger(userPrivateKey, 16));
+        TransactionReceipt addUserSceneRule = userSceneRule.addUserSceneRule(addr4, new Utf8String("属性1"), new Address(linkageRuleAddr), new Address(trustRuleAddr_2),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair1),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (UserSceneRule.AddUserSceneRuleEventEventResponse response : UserSceneRule.getAddUserSceneRuleEventEvents(addUserSceneRule)) {
             System.out.println("添加用户场景 事件返回:" + response.message.getValue());
         }
         // 检查用户规则是否存在
@@ -201,14 +276,16 @@ public class mainTest {
     }
 
     /* 联动规则合约测试 */
-    public static void linkageRuleTest() throws ExecutionException, InterruptedException {
+    private static void linkageRuleTest() throws ExecutionException, InterruptedException, SignatureException {
         // 获取平台1联动规则合约
         LinkageRule linkageRule = LinkageRule.load(linkageRuleAddr, web3j, credentials, gasPrice, gasLimit);
         // 设置联动规则
-        TransactionReceipt addUserSceneRule = linkageRule.addLinkageRule(addr4, new Utf8String("属性1")).get();
-        List<LinkageRule.AddLinkageRuleEventEventResponse> lstCN1 = LinkageRule.getAddLinkageRuleEventEvents(addUserSceneRule);
-        for (int i = 0; i < lstCN1.size(); i++) {
-            LinkageRule.AddLinkageRuleEventEventResponse response = lstCN1.get(i);
+        ECKeyPair keyPair1 = ECKeyPair.create(new BigInteger(platAddr_1_PrivateKey, 16));
+        long[] testNTS = getNounceAndTimeStamp();
+        TransactionReceipt addLinkageSceneRule = linkageRule.addLinkageRule(addr4, new Utf8String("属性1"),
+                signParams(Numeric.toHexString(packageParams(new String[]{}, new String[]{}, testNTS)), keyPair1),
+                new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]))).get();
+        for (LinkageRule.AddLinkageRuleEventEventResponse response : LinkageRule.getAddLinkageRuleEventEvents(addLinkageSceneRule)) {
             System.out.println("添加用户场景 事件返回:" + response.message.getValue());
         }
         // 检查联动规则
@@ -217,15 +294,22 @@ public class mainTest {
     }
 
     /* 联动测试 */
-    public static void transactionTest() throws ExecutionException, InterruptedException {
+    private static void transactionTest() throws ExecutionException, InterruptedException, SignatureException {
         TrustRule trustRule = TrustRule.load(trustRuleAddr_1, web3j, credentials, gasPrice, gasLimit);
         // 通过平台1部署的信任规则合约发起交易
-
-        TransactionReceipt startLinking = trustRule.startLinking(addr4, new Utf8String("属性1"), new Utf8String("打开"), new Address(userSceneRuleAddr)).get();
-        List<LinkageRule.LinkageRuleEventEventResponse> lstCN1 = LinkageRule.getLinkageRuleEventEvents(startLinking);
-        for (int i = 0; i < lstCN1.size(); i++) {
-            LinkageRule.LinkageRuleEventEventResponse response = lstCN1.get(i);
-            System.out.println("添加用户场景 事件返回:" + response.message.getValue());
+        ECKeyPair keyPair1 = ECKeyPair.create(new BigInteger(deviceAddr_1_PrivateKey, 16));
+        long[] testNTS = getNounceAndTimeStamp();
+        DynamicArray<Bytes32> signResult1 = signParams(Numeric.toHexString(packageParams(new String[]{platAddr_1, deviceAddr_1, platAddr_2, deviceAddr_2, userSceneRuleAddr}, new String[]{"属性1", "打开"}, testNTS)), keyPair1);
+        DynamicArray<Uint256> nounceResult1 = new DynamicArray<>(new Uint256(testNTS[0]), new Uint256(testNTS[1]));
+        TransactionReceipt startLinking = trustRule.startLinking(addr4, new Address(userSceneRuleAddr), new Utf8String("属性1"), new Utf8String("打开"), signResult1, nounceResult1).get();
+        for (TrustRule.TrustRuleEventEventResponse response : TrustRule.getTrustRuleEventEvents(startLinking)) {
+            System.out.println("触发联动 TrustRuleEventEventResponse事件返回:" + response.message.getValue());
+        }
+        for (UserSceneRule.UserSceneRuleEventEventResponse response : UserSceneRule.getUserSceneRuleEventEvents(startLinking)) {
+            System.out.println("触发联动 UserSceneRuleEventEventResponse事件返回:" + response.message.getValue());
+        }
+        for (LinkageRule.LinkageRuleEventEventResponse response : LinkageRule.getLinkageRuleEventEvents(startLinking)) {
+            System.out.println("触发联动 LinkageRuleEventEventResponse事件返回:" + response.message.getValue());
         }
         // 查询交易记录
         LinkageRule linkageRule = LinkageRule.load(linkageRuleAddr, web3j, credentials, gasPrice, gasLimit);
@@ -276,11 +360,11 @@ public class mainTest {
 
         deployer();
         signTest();
-//        registerTest();
-//        trustRuleTest();
-//        userSceneRuleTest();
-//        linkageRuleTest();
-//        transactionTest();
+        registerTest();
+        userSceneRuleTest();
+        linkageRuleTest();
+        trustRuleTest();
+        transactionTest();
 
         /* 打印区块数量 */
         ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
@@ -290,12 +374,12 @@ public class mainTest {
     }
 
     /* 集中部署 */
-    static void deployer() throws ExecutionException, InterruptedException {
+    private static void deployer() throws ExecutionException, InterruptedException {
         deploy("Register");
-//        deploy("TrustRule_1");
-//        deploy("TrustRule_2");
-//        deploy("LinkageRule");
-//        deploy("UserSceneRule");
+        deploy("TrustRule_1");
+        deploy("TrustRule_2");
+        deploy("LinkageRule");
+        deploy("UserSceneRule");
     }
 
 }
